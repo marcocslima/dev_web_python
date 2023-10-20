@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Currículo</title>
+</head>
+<body>
+    <h2>Curriculum Vitae - MCL</h2>
+    <p><strong>Name:</strong> {name}</p>
+    <p><strong>Surname:</strong> {surname}</p>
+    <p><strong>Age:</strong> {age}</p>
+    <p><strong>Profession:</strong> {profession}</p>
+</body>
+</html>
