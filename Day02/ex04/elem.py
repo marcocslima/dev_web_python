@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 class Text(str):
     """
     A Text class to represent a text you could use with your HTML elements.
@@ -27,7 +26,10 @@ class Elem:
 
         Obviously.
         """
-        [...]
+        self.tag = tag
+        self.attr = attr
+        self.content = [] if content is None else [content]
+        self.tag_type = tag_type
 
     def __str__(self):
         """
@@ -37,9 +39,15 @@ class Elem:
         elements...).
         """
         if self.tag_type == 'double':
-            [...]
+            result = f"<{self.tag}"
+            for key, value in self.attr.items():
+                result += f" {key}='{value}'"
+            result += f"{self.content}</{self.tag}>"
         elif self.tag_type == 'simple':
-            [...]
+            result = f"<{self.tag}"
+            for key, value in self.attr.items():
+                result += f" {key}='{value}'"
+            result += f" />"
         return result
 
     def __make_attr(self):
@@ -60,7 +68,7 @@ class Elem:
             return ''
         result = '\n'
         for elem in self.content:
-            result += [...]
+            result += '  ' + str(elem).replace('\n', '\n  ') + '\n'
         return result
 
     def add_content(self, content):
@@ -84,4 +92,5 @@ class Elem:
 
 
 if __name__ == '__main__':
-    [...]
+    import tests
+    tests.test()

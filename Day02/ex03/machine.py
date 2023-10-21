@@ -33,7 +33,7 @@ class CoffeeMachine():
             raise self.BrokenMachineException()
         return random.choice([beverage, self.EmptyCup()])
 
-def machine():
+def coffe_machine():
     machine = CoffeeMachine()
 
     try:
@@ -45,4 +45,4 @@ def machine():
         machine.repair()
 
 if __name__ == '__main__':
-    machine()
+    coffe_machine()
