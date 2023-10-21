@@ -28,7 +28,7 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = content if content is not None else [] 
+        self.content = content
         self.tag_type = tag_type
 
     def __str__(self):
@@ -60,8 +60,8 @@ class Elem:
         Here is a method to render the content, including embedded elements.
         """
 
-        # if len(self.content) == 0:
-        #     return ''
+        if len(self.content) == 0:
+            return ''
         result = '\n'
         for elem in self.content:
             result += Text(elem)
@@ -88,24 +88,13 @@ class Elem:
 
 
 if __name__ == '__main__':
-    head = Elem(tag='head',
-                    content=Elem(tag='title',
-                    content='Hello ground',tag_type='double'),
-                    tag_type='double')
-    boad = Elem(tag='body',
-                    content=[
-                        Elem(tag='h1',
-                            content='Oh no, not again!',
-                            tag_type='double'),
-                        Elem(tag='img',
-                            attr={'src': 'http://i.imgur.com/pfp3T.jpg'},
-                            tag_type='simple')],
-                    tag_type='double')
-    html = Elem(tag='html',
-                    content=[head, boad],
-                    tag_type='double')
-
-    print(boad)
+    title = Elem(tag='title', content='Hello ground', tag_type='double')
+    h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
+    img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
+    
+    head = Elem(tag='head', content=[title],tag_type='double')
+    body = Elem(tag='body', content=[h1, img], tag_type='double')
+    html = Elem(tag='html', content=[head, body], tag_type='double')
 
     base = open('resp.html', 'w')
     base.write(str(html))
