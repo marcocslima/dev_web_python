@@ -68,7 +68,7 @@ class Elem:
             return ''
         result = '\n'
         for elem in self.content:
-            result += '  ' + str(elem).replace('\n', '\n  ') + '\n'
+            result += Text(elem)
         return result
 
     def add_content(self, content):
@@ -92,5 +92,9 @@ class Elem:
 
 
 if __name__ == '__main__':
-    import tests
-    tests.test()
+    elem = Elem(tag='html', content=[Elem(tag='head', content=Elem(tag='title', content=Text('"Hello ground!"'))), Elem(tag='body', content=[Elem(tag='h1', content=Text('"Oh no, not again!"')), Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'})])])
+
+    html = open('resp.html', 'w')
+    html.write(str(elem))
+    html.close()
+    
