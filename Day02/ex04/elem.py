@@ -28,7 +28,7 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = [] if content is None else [content]
+        self.content = content
         self.tag_type = tag_type
 
     def __str__(self):
@@ -42,12 +42,12 @@ class Elem:
             result = f"<{self.tag}"
             for key, value in self.attr.items():
                 result += f" {key}='{value}'"
-            result += f"{self.content}</{self.tag}>"
+            result += f">{self.content}</{self.tag}>"
         elif self.tag_type == 'simple':
             result = f"<{self.tag}"
             for key, value in self.attr.items():
                 result += f" {key}='{value}'"
-            result += f" />"
+            result += f"/>"
         return result
 
     def __make_attr(self):
@@ -92,8 +92,14 @@ class Elem:
 
 
 if __name__ == '__main__':
-    elem = Elem(tag='html', content=[Elem(tag='head', content=Elem(tag='title', content=Text('"Hello ground!"'))), Elem(tag='body', content=[Elem(tag='h1', content=Text('"Oh no, not again!"')), Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'})])])
+    elem = Elem(tag='html',
+                content=Elem(tag='head',
+                content=Elem(tag='title',
+                content='Hello ground',tag_type='double'),
+                tag_type='double'), 
+                tag_type='double')
 
+    print(elem)
     html = open('resp.html', 'w')
     html.write(str(elem))
     html.close()
