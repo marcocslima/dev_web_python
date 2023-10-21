@@ -62,7 +62,7 @@ class Elem:
 
         # if len(self.content) == 0:
         #     return ''
-        # result = '\n'
+        result = '\n'
         for elem in self.content:
             result += Text(elem)
         return result
