@@ -28,7 +28,7 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = content
+        self.content = content if content is not None else [] 
         self.tag_type = tag_type
 
     def __str__(self):
@@ -92,15 +92,26 @@ class Elem:
 
 
 if __name__ == '__main__':
-    elem = Elem(tag='html',
-                content=Elem(tag='head',
-                content=Elem(tag='title',
-                content='Hello ground',tag_type='double'),
-                tag_type='double'), 
-                tag_type='double')
+    head = Elem(tag='head',
+                    content=Elem(tag='title',
+                    content='Hello ground',tag_type='double'),
+                    tag_type='double')
+    boad = Elem(tag='body',
+                    content=[
+                        Elem(tag='h1',
+                            content='Oh no, not again!',
+                            tag_type='double'),
+                        Elem(tag='img',
+                            attr={'src': 'http://i.imgur.com/pfp3T.jpg'},
+                            tag_type='simple')],
+                    tag_type='double')
+    html = Elem(tag='html',
+                    content=[head, boad],
+                    tag_type='double')
 
-    print(elem)
-    html = open('resp.html', 'w')
-    html.write(str(elem))
-    html.close()
+    print(boad)
+
+    base = open('resp.html', 'w')
+    base.write(str(html))
+    base.close()
     
