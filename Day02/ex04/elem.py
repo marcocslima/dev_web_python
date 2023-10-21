@@ -60,9 +60,9 @@ class Elem:
         Here is a method to render the content, including embedded elements.
         """
 
-        if len(self.content) == 0:
-            return ''
-        result = '\n'
+        # if len(self.content) == 0:
+        #     return ''
+        # result = '\n'
         for elem in self.content:
             result += Text(elem)
         return result

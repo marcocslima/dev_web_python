@@ -1,15 +1,8 @@
-<body>
-<h1>
-Oh no, not again!</h1><img src="http://i.imgur.com/pfp3T.jpg"/></body>
 Traceback (most recent call last):
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 111, in <module>
-    base.write(str(html))
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 109, in <module>
+    print(boad)
   File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 43, in __str__
-    result += self.__make_content()
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 67, in __make_content
+    print(self.__make_content())
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 68, in __make_content
     result += Text(elem)
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 43, in __str__
-    result += self.__make_content()
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 63, in __make_content
-    if len(self.content) == 0:
-TypeError: object of type 'Elem' has no len()
+UnboundLocalError: local variable 'result' referenced before assignment
