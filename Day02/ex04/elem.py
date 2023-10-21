@@ -39,15 +39,11 @@ class Elem:
         elements...).
         """
         if self.tag_type == 'double':
-            result = f"<{self.tag}"
-            for key, value in self.attr.items():
-                result += f" {key}='{value}'"
-            result += f">{self.content}</{self.tag}>"
+            result = f"<{self.tag}{self.__make_attr()}>"
+            result += self.__make_content()
+            result += f"</{self.tag}>"
         elif self.tag_type == 'simple':
-            result = f"<{self.tag}"
-            for key, value in self.attr.items():
-                result += f" {key}='{value}'"
-            result += f"/>"
+            result = f"<{self.tag}{self.__make_attr()}/>"
         return result
 
     def __make_attr(self):
