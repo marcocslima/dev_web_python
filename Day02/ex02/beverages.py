@@ -21,7 +21,6 @@ class Coffee(HotBeverage):
 class Tea(HotBeverage):
     def __init__(self):
         super().__init__()
-        self.price = 0.30
         self.name = "tea"
     
 class Chocolate(HotBeverage):
@@ -49,6 +48,7 @@ def beverages():
     chocolate = Chocolate()
     cappuccino = Cappuccino()
 
+    print(hot_beverage)
     print(coffee)
     print(tea)
     print(chocolate)
