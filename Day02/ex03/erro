@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex03/machine.py", line 5, in <module>
+    class CoffeeMachine():
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex03/machine.py", line 10, in CoffeeMachine
+    class EmptyCup(beverages.HotBeverage()):
+TypeError: HotBeverage.__init__() takes 1 positional argument but 4 were given
