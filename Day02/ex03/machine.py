@@ -7,7 +7,7 @@ class CoffeeMachine():
         self.broken = False
         self.drinks_served = 0
 
-    class EmptyCup(beverages.HotBeverage()):
+    class EmptyCup(beverages.HotBeverage):
         def __init__(self):
             super().__init__()
             self.price = 0.90
@@ -38,7 +38,7 @@ def machine():
 
     try:
         while True:
-            drink = machine.serve(random.choice([HotBeverage]))
+            drink = machine.serve(random.choice([beverages.HotBeverage(), beverages.Coffee(), beverages.Tea(), beverages.Chocolate(), beverages.Cappuccino()]))
             print(drink)
     except CoffeeMachine.BrokenMachineException as e:
         print(e)
