@@ -23,20 +23,27 @@ class Elem:
             super().__init__('Content must be a Text instance or a list of Text instances')
 
     def format_html(html_str):
+        html_str = html_str.replace('><', '>\n<')
         lines = html_str.split('\n')
         formatted_lines = []
         indent_level = 0
+        flag = 0;
 
         for line in lines:
             line = line.strip()
             if line.startswith("</"):
-                indent_level -= 1
+                if flag == 1:
+                    indent_level -= 2
+                else:
+                    indent_level -= 1
+                flag = 0
+            else:
+                flag == 1
 
             formatted_line = ' ' * (4 * indent_level) + line
-            formatted_lines.append(formatted_line)
-
-            if line.startswith("<") and not line.endswith("/>"):
+            if not line.startswith("</") and not line.endswith("/>"):
                 indent_level += 1
+            formatted_lines.append(formatted_line)
 
         formatted_html = '\n'.join(formatted_lines)
         return formatted_html
@@ -61,10 +68,12 @@ class Elem:
         """
         if self.tag_type == 'double':
             result = f"<{self.tag}{self.__make_attr()}>"
-            result += self.__make_content()
-            result += f"</{self.tag}>"
+            result += f"{self.__make_content()}"
+            result += f"\n</{self.tag}>"
+            result = Text(result)
         elif self.tag_type == 'simple':
-            result = f"<{self.tag}{self.__make_attr()}/>"
+            result = f"\n<{self.tag}{self.__make_attr()}/>"
+            result = Text(result)
         return result
 
     def __make_attr(self):
