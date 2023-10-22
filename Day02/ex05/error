@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex05/elements.py", line 91, in <module>
+    print(html)
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex05/elem.py", line 70, in __str__
+    result += f"{self.__make_content()}"
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex05/elem.py", line 93, in __make_content
+    result += Text(elem)
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex05/elem.py", line 70, in __str__
+    result += f"{self.__make_content()}"
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex05/elem.py", line 89, in __make_content
+    if len(self.content) == 0:
+TypeError: object of type 'Title' has no len()
