@@ -18,7 +18,9 @@ class Elem:
     """
     Elem will permit us to represent our HTML elements.
     """
-    [...]
+    class ValidationError(Exception):
+        def __init__(self):
+            super().__init__('Content must be a Text instance or a list of Text instances')
 
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
         """
@@ -59,7 +61,6 @@ class Elem:
         """
         Here is a method to render the content, including embedded elements.
         """
-
         if len(self.content) == 0:
             return ''
         result = '\n'
