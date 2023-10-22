@@ -22,6 +22,25 @@ class Elem:
         def __init__(self):
             super().__init__('Content must be a Text instance or a list of Text instances')
 
+    def format_html(html_str):
+        lines = html_str.split('\n')
+        formatted_lines = []
+        indent_level = 0
+
+        for line in lines:
+            line = line.strip()
+            if line.startswith("</"):
+                indent_level -= 1
+
+            formatted_line = ' ' * (4 * indent_level) + line
+            formatted_lines.append(formatted_line)
+
+            if line.startswith("<") and not line.endswith("/>"):
+                indent_level += 1
+
+        formatted_html = '\n'.join(formatted_lines)
+        return formatted_html
+
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
         """
         __init__() method.
@@ -102,6 +121,8 @@ if __name__ == '__main__':
     body.add_content([h1, img])
     html.add_content([header, body])
 
+    formatted_html = Elem.format_html(str(html))
+
     base = open('base.html', 'w')
-    base.write(str(html))
+    base.write(formatted_html)
     base.close()
