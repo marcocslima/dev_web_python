@@ -1,15 +1,6 @@
-<body>
-<h1>
-Oh no, not again!</h1><img src="http://i.imgur.com/pfp3T.jpg"/></body>
 Traceback (most recent call last):
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 111, in <module>
-    base.write(str(html))
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 43, in __str__
-    result += self.__make_content()
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 67, in __make_content
-    result += Text(elem)
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 43, in __str__
-    result += self.__make_content()
-  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 66, in __make_content
-    for elem in self.content:
-TypeError: 'Elem' object is not iterable
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 114, in <module>
+    unordered_list.add_content([list_item_1, list_item_2, list_item_3])
+  File "/home/mcl/Área de Trabalho/Projetos/dev_web_python/Day02/ex04/elem.py", line 75, in add_content
+    self.content += [elem for elem in content if elem != Text('')]
+TypeError: unsupported operand type(s) for +=: 'NoneType' and 'list'
