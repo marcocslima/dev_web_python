@@ -82,10 +82,14 @@ class Br(Elem):
 
 if __name__ == '__main__':
     html = Html(content=[
-        Head(content=Title(content=Text('"Hello ground!"'))),
+        Head(content=[
+            Title(content=[Text('"Hello ground!"')])
+            ]),
         Body(content=[
             H1(content=Text('"Oh no, not again!"')),
             Img(attr={'src': 'http://i.imgur.com/pfp3T.jpg'})
         ])
     ])
-    print(html)
+    resp = open('html_base.html', 'w')
+    resp.write(Elem.format_html(html.__str__()))
+    resp.close()

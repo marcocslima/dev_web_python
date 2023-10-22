@@ -11,8 +11,8 @@ class Text(str):
         """
         Do you really need a comment to understand this method?..
         """
-        # return super().__str__().replace('\n', '\n<br />\n')
-        return super().__str__().replace('\n', '\n<br />\n').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+        return super().__str__().replace('\n', '\n<br />\n')
+        # return super().__str__().replace('\n', '\n<br />\n').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 
 class Elem:
@@ -23,6 +23,7 @@ class Elem:
         def __init__(self):
             super().__init__('Content must be a Text instance or a list of Text instances')
 
+    @staticmethod
     def format_html(html_str):
         html_str = html_str.replace('><', '>\n<')
         lines = html_str.split('\n')
