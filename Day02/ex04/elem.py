@@ -114,21 +114,23 @@ class Elem:
 
 
 if __name__ == '__main__':
-    title = Elem(tag='title', content='Hello ground', tag_type='double')
-    h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
-    img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
-    
-    
-    header = Elem(tag='head',tag_type='double')
-    body = Elem(tag='body', tag_type='double')
-    html = Elem(tag='html', tag_type='double')
+    try:
+        title = Elem(tag='title', content='Hello ground', tag_type='double')
+        h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
+        img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
+        
+        header = Elem(tag='head',tag_type='double')
+        body = Elem(tag='body', tag_type='double')
+        html = Elem(tag='html', tag_type='double')
 
-    header.add_content(title)
-    body.add_content([h1, img])
-    html.add_content([header, body])
+        header.add_content(title)
+        body.add_content([h1, img])
+        html.add_content([header, body])
 
-    formatted_html = Elem.format_html(str(html))
+        formatted_html = Elem.format_html(str(html))
 
-    base = open('base.html', 'w')
-    base.write(formatted_html)
-    base.close()
+        base = open('base.html', 'w')
+        base.write(Text(formatted_html))
+        base.close()
+    except Elem.ValidationError as e:
+        print(e)
