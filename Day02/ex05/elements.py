@@ -91,5 +91,5 @@ if __name__ == '__main__':
         ])
     ])
     resp = open('html_base.html', 'w')
-    resp.write(Elem.format_html(html.__str__()))
+    resp.write(html.__str__())
     resp.close()
