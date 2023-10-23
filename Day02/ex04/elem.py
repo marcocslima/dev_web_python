@@ -11,9 +11,7 @@ class Text(str):
         """
         Do you really need a comment to understand this method?..
         """
-        return super().__str__().replace('\n', '\n<br />\n')
-        # return super().__str__().replace('\n', '\n<br />\n').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-
+        return super().__str__().replace('\n', '\n<br />\n').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 class Elem:
     """
@@ -24,7 +22,6 @@ class Elem:
             super().__init__('Content must be a Text instance or a list of Text instances')
 
     def format_html(html_str):
-        # html_str = html_str.replace('><', '>\n<')
         lines = html_str.split('\n')
         formatted_lines = []
         indent_level = 0
@@ -115,24 +112,24 @@ class Elem:
                                                 for elem in content])))
 
 
-if __name__ == '__main__':
-    try:
-        title = Elem(tag='title', content='Hello ground', tag_type='double')
-        h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
-        img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
+# if __name__ == '__main__':
+#     try:
+#         title = Elem(tag='title', content='Hello ground', tag_type='double')
+#         h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
+#         img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
         
-        header = Elem(tag='head',tag_type='double')
-        body = Elem(tag='body', tag_type='double')
-        html = Elem(tag='html', tag_type='double')
+#         header = Elem(tag='head',tag_type='double')
+#         body = Elem(tag='body', tag_type='double')
+#         html = Elem(tag='html', tag_type='double')
 
-        header.add_content(title)
-        body.add_content([h1, img])
-        html.add_content([header, body])
+#         header.add_content(title)
+#         body.add_content([h1, img])
+#         html.add_content([header, body])
 
-        # formatted_html = Elem.format_html(str(html))
+#         # formatted_html = Elem.format_html(str(html))
 
-        base = open('base.html', 'w')
-        base.write(Text(str(html)))
-        base.close()
-    except Elem.ValidationError as e:
-        print(e)
+#         base = open('base.html', 'w')
+#         base.write(Text(str(html)))
+#         base.close()
+#     except Elem.ValidationError as e:
+#         print(e)
