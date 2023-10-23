@@ -72,8 +72,7 @@ class Elem:
         elif self.tag_type == 'simple':
             result = f"\n<{self.tag}{self.__make_attr()}/>"
         result += '\n'
-        result = result.replace('\n\n', '>\n<')
-        result = result.replace('<<', '<').replace('>>', '>')
+        result = result.replace('\n\n', '>\n<').replace('<<', '<').replace('>>', '>')
         return Elem.format_html(result)
 
     def __make_attr(self):
