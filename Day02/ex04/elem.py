@@ -11,7 +11,13 @@ class Text(str):
         """
         Do you really need a comment to understand this method?..
         """
-        return super().__str__().replace('\n', '\n<br />\n').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+        if super().__str__() == '<':
+            return super().__str__().replace('<', '&lt;')
+        if super().__str__() == '>':
+            return super().__str__().replace('>', '&gt;')
+        if super().__str__() == '"':
+            return super().__str__().replace('"', '&quot;')
+        return super().__str__().replace('\n', '\n<br />\n')
 
 class Elem:
     """
@@ -22,7 +28,8 @@ class Elem:
             super().__init__('Content must be a Text instance or a list of Text instances')
 
     def format_html(html_str):
-        lines = html_str.split('\n')
+        lines = html_str.replace('><','>,<')
+        lines = lines.split(',')
         formatted_lines = []
         indent_level = 0
         flag = 0
@@ -34,14 +41,23 @@ class Elem:
             if flag == 1:
                 indent_level -= 1
                 flag = 0
-            formatted_line = ' ' * (4 * indent_level) + line
+            formatted_line = ' ' * (2 * indent_level) + line
             if not line.startswith("</") and not line.endswith("/>"):
                 indent_level += 1
             formatted_lines.append(formatted_line)
             if not line.startswith("<"):
                 flag = 1
 
-        formatted_html = '\n'.join(formatted_lines)
+        for i in range(0, len(formatted_lines)):
+            if formatted_lines[i] == '<body>' and '<div>' in formatted_lines[i+1]:
+                formatted_lines[i].join('\n')
+            if '<div>' in formatted_lines[i] and '  </div>' in formatted_lines[i+1]:
+                formatted_lines[i+1].replace('  </div>','</div>').join('\n')
+
+        formatted_html = ''.join(formatted_lines)
+        # if '<div></div>' in formatted_html:
+        #     return formatted_html.replace('<div></div>', '<div></div>\n')
+        # else:
         return formatted_html
 
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
@@ -52,7 +68,7 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = content if content is not None else []
+        self.content = content
         self.tag_type = tag_type
 
     def __str__(self):
@@ -65,11 +81,9 @@ class Elem:
         if self.tag_type == 'double':
             result = f"<{self.tag}{self.__make_attr()}>"
             result += f"{self.__make_content()}"
-            result += f"\n</{self.tag}>"
+            result += f"</{self.tag}>"
         elif self.tag_type == 'simple':
-            result = f"\n<{self.tag}{self.__make_attr()}/>"
-        result += '\n'
-        result = result.replace('\n\n', '>\n<').replace('<<', '<').replace('>>', '>')
+            result = f"<{self.tag}{self.__make_attr()}/>"
         return Elem.format_html(result)
 
     def __make_attr(self):
@@ -85,11 +99,13 @@ class Elem:
         """
         Here is a method to render the content, including embedded elements.
         """
-        if len(self.content) == 0:
-            return ''
-        result = '\n'
-        for elem in self.content:
-            result += Text(elem)
+        if not isinstance(self.content, Elem):
+            if self.content == None:
+                return ''
+        if type(self.content) == list:
+            for elem in self.content:
+                result += Text(elem)
+        result = str(self.content)
         return result
 
     def add_content(self, content):
@@ -112,7 +128,9 @@ class Elem:
                                                 for elem in content])))
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    print(Elem(tag='body', attr={}, content=Elem(),
+                    tag_type='double'))
 #     try:
 #         title = Elem(tag='title', content='Hello ground', tag_type='double')
 #         h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
