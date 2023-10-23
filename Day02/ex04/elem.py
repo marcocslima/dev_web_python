@@ -24,7 +24,7 @@ class Elem:
             super().__init__('Content must be a Text instance or a list of Text instances')
 
     def format_html(html_str):
-        html_str = html_str.replace('><', '>\n<')
+        # html_str = html_str.replace('><', '>\n<')
         lines = html_str.split('\n')
         formatted_lines = []
         indent_level = 0
@@ -71,7 +71,10 @@ class Elem:
             result += f"\n</{self.tag}>"
         elif self.tag_type == 'simple':
             result = f"\n<{self.tag}{self.__make_attr()}/>"
-        return result
+        result += '\n'
+        result = result.replace('\n\n', '>\n<')
+        result = result.replace('<<', '<').replace('>>', '>')
+        return Elem.format_html(result)
 
     def __make_attr(self):
         """
@@ -127,10 +130,10 @@ if __name__ == '__main__':
         body.add_content([h1, img])
         html.add_content([header, body])
 
-        formatted_html = Elem.format_html(str(html))
+        # formatted_html = Elem.format_html(str(html))
 
         base = open('base.html', 'w')
-        base.write(Text(formatted_html))
+        base.write(Text(str(html)))
         base.close()
     except Elem.ValidationError as e:
         print(e)
