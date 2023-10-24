@@ -27,12 +27,17 @@ class Elem:
         def __init__(self):
             super().__init__('Content must be a Text instance or a list of Text instances')
 
-    def format_html(html_str):
-        lines = html_str.replace('><','>,<')
-        lines = lines.split(',')
+    def ident(html_str):
+        lines = html_str.replace('\n', '@@@ @@@')
+        lines = lines.split(' @@@')
         formatted_lines = []
         indent_level = 0
         flag = 0
+
+        if len(lines) == 1:
+            front = lines[0].split(' ')
+            back = front[1].split('</')
+            return front[0] + '\n  ' + back[0] + '\n</' + back[1]  
 
         for line in lines:
             line = line.strip()
@@ -45,8 +50,18 @@ class Elem:
             if not line.startswith("</") and not line.endswith("/>"):
                 indent_level += 1
             formatted_lines.append(formatted_line)
-            if not line.startswith("<"):
+            if not line.startswith("<") or '<div></div>' in line:
                 flag = 1
+           
+        formatted_html = ''.join(formatted_lines)
+        formatted_html = formatted_html.replace('@@@','\n')
+        return formatted_html        
+
+    
+    def format_html(html_str):
+        lines = html_str.replace('><','>,<')
+        lines = lines.split(',')
+        formatted_lines = lines
 
         for i in range(0, len(formatted_lines)):
             if formatted_lines[i] == '<body>' and '<div>' in formatted_lines[i+1]:
@@ -54,18 +69,29 @@ class Elem:
             if formatted_lines[i] == '<div>' and '<div>' in formatted_lines[i+1]:
                 formatted_lines[i] += '\n'
             if formatted_lines[i] == '<div>' and not '<' in formatted_lines[i+1]:
+                formatted_lines[i] += '\n'
                 formatted_lines[i+1] += '\n'
             if not '<' in formatted_lines[i] and not '<' in formatted_lines[i+1]:
                 formatted_lines[i+1] += '\n'
-            if '<div>' in formatted_lines[i] and '  </div>' in formatted_lines[i+1]:
-                formatted_lines[i+1] = formatted_lines[i+1].replace('  </div>','</div>')
-                formatted_lines[i+1] += '\n'
-
+            if len(formatted_lines) > 1:
+                if '<div>' in formatted_lines[i] and '  </div>' in formatted_lines[i+1]:
+                    formatted_lines[i+1] = formatted_lines[i+1].replace('  </div>','</div>')
+                    formatted_lines[i+1] += '\n'
+            
         formatted_html = ''.join(formatted_lines)
-        # if '<div></div>' in formatted_html:
-        #     return formatted_html.replace('<div></div>', '<div></div>\n')
-        # else:
-        return formatted_html
+        if formatted_html == '<div></div>':
+            return formatted_html
+        else:
+            if '</' in formatted_lines[len(formatted_lines)-1] \
+            and '</' in formatted_lines[len(formatted_lines)-2]\
+            and len(formatted_lines) > 1:
+                formatted_lines[len(formatted_lines)-2] = formatted_lines[len(formatted_lines)-2] + '\n'
+            formatted_html = ''.join(formatted_lines)
+            formatted_html = formatted_html.replace('\n \n','\n ')
+            formatted_html = formatted_html.replace('\n\n','\n')
+            formatted_html = formatted_html.replace(' \n ','')
+            formatted_html = Elem.ident(formatted_html)
+            return formatted_html
 
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
         """
@@ -78,17 +104,22 @@ class Elem:
         self.content = content
         self.tag_type = tag_type
 
+        if content == '':
+            if not Elem.check_type(content):
+                raise(Exception("incorrect behaviour."))
+
         if content is not None:
             if isinstance(content, Elem):
                 self.content = content
-        elif isinstance(content, list):
-            self.content = []
-            for item in content:
-                if isinstance(item, (Elem, Text)):
-                    self.add_content(item)
-                else:
-                    # Trate item de outra forma, se necessário
-                    pass
+            elif isinstance(content, list):
+                self.content = []
+                for item in content:
+                    if isinstance(item, (Elem, Text)):
+                        self.add_content(item)
+                    else:
+                        # Trate item de outra forma, se necessário
+                        pass
+             
 
     def __str__(self):
         """
@@ -103,7 +134,6 @@ class Elem:
             result += f"</{self.tag}>"
         elif self.tag_type == 'simple':
             result = f"<{self.tag}{self.__make_attr()}/>"
-        # print(result)
         result = Elem.format_html(result)
         return result
 
@@ -129,18 +159,21 @@ class Elem:
                 if isinstance(elem, Text):
                     result += str(elem).replace('\n', '\n<br />\n')  # Adiciona <br /> para quebras de linha
                 elif isinstance(elem, Elem):
+                    if not '<' in result:
+                        result = ',' + result.replace('\n','\n ,')
                     result += str(elem)
-                result += '\n'  # Adiciona uma quebra de linha após cada elemento
+                if not result == '': 
+                    result += '\n'  # Adiciona uma quebra de linha após cada elemento
             return result
         result = str(self.content)
+        if len(result) == 1:
+            result = ' ' + result
         return result
 
     def add_content(self, content):
-        if not Elem.check_type(content):
+        if not Elem.check_type(content) and content != Text(''):
             raise Elem.ValidationError
-        # if type(content) == list:
-        #     self.content += [elem for elem in content if elem != Text('')]
-        elif content != Text(''):
+        if content is not None:
             self.content.append(content)
 
     @staticmethod
@@ -153,7 +186,6 @@ class Elem:
                 (type(content) == list and all([type(elem) == Text or
                                                 isinstance(elem, Elem)
                                                 for elem in content])))
-
 
 if __name__ == '__main__':
     print(str(Elem(tag='body', attr={}, content=Elem(),
