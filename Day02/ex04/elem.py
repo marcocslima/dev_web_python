@@ -50,9 +50,16 @@ class Elem:
 
         for i in range(0, len(formatted_lines)):
             if formatted_lines[i] == '<body>' and '<div>' in formatted_lines[i+1]:
-                formatted_lines[i].join('\n')
+                formatted_lines[i] += '\n'
+            if formatted_lines[i] == '<div>' and '<div>' in formatted_lines[i+1]:
+                formatted_lines[i] += '\n'
+            if formatted_lines[i] == '<div>' and not '<' in formatted_lines[i+1]:
+                formatted_lines[i+1] += '\n'
+            if not '<' in formatted_lines[i] and not '<' in formatted_lines[i+1]:
+                formatted_lines[i+1] += '\n'
             if '<div>' in formatted_lines[i] and '  </div>' in formatted_lines[i+1]:
-                formatted_lines[i+1].replace('  </div>','</div>').join('\n')
+                formatted_lines[i+1] = formatted_lines[i+1].replace('  </div>','</div>')
+                formatted_lines[i+1] += '\n'
 
         formatted_html = ''.join(formatted_lines)
         # if '<div></div>' in formatted_html:
@@ -68,7 +75,7 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = content
+        self.content = content if isinstance(content, Elem) else None
         self.tag_type = tag_type
 
     def __str__(self):
@@ -84,7 +91,9 @@ class Elem:
             result += f"</{self.tag}>"
         elif self.tag_type == 'simple':
             result = f"<{self.tag}{self.__make_attr()}/>"
-        return Elem.format_html(result)
+        # print(result)
+        result = Elem.format_html(result)
+        return result
 
     def __make_attr(self):
         """
@@ -129,8 +138,10 @@ class Elem:
 
 
 if __name__ == '__main__':
-    print(Elem(tag='body', attr={}, content=Elem(),
-                    tag_type='double'))
+    print(str(Elem(tag='body', attr={}, content=Elem(),
+                    tag_type='double')))
+    # print(Elem(tag='body', attr={}, content=Elem(),
+                    # tag_type='double'))
 #     try:
 #         title = Elem(tag='title', content='Hello ground', tag_type='double')
 #         h1 = Elem(tag='h1', content='Oh no, not again!', tag_type='double')
