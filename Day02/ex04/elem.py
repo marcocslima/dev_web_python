@@ -75,8 +75,20 @@ class Elem:
         """
         self.tag = tag
         self.attr = attr
-        self.content = content if isinstance(content, Elem) else None
+        self.content = content
         self.tag_type = tag_type
+
+        if content is not None:
+            if isinstance(content, Elem):
+                self.content = content
+        elif isinstance(content, list):
+            self.content = []
+            for item in content:
+                if isinstance(item, (Elem, Text)):
+                    self.add_content(item)
+                else:
+                    # Trate item de outra forma, se necessário
+                    pass
 
     def __str__(self):
         """
@@ -109,19 +121,25 @@ class Elem:
         Here is a method to render the content, including embedded elements.
         """
         if not isinstance(self.content, Elem):
-            if self.content == None:
+            if self.content is None:
                 return ''
         if type(self.content) == list:
+            result = ''
             for elem in self.content:
-                result += Text(elem)
+                if isinstance(elem, Text):
+                    result += str(elem).replace('\n', '\n<br />\n')  # Adiciona <br /> para quebras de linha
+                elif isinstance(elem, Elem):
+                    result += str(elem)
+                result += '\n'  # Adiciona uma quebra de linha após cada elemento
+            return result
         result = str(self.content)
         return result
 
     def add_content(self, content):
         if not Elem.check_type(content):
             raise Elem.ValidationError
-        if type(content) == list:
-            self.content += [elem for elem in content if elem != Text('')]
+        # if type(content) == list:
+        #     self.content += [elem for elem in content if elem != Text('')]
         elif content != Text(''):
             self.content.append(content)
 
