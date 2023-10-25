@@ -25,7 +25,8 @@ class Elem:
     """
     class ValidationError(Exception):
         def __init__(self):
-            super().__init__('Content must be a Text instance or a list of Text instances')
+            # super().__init__('Content must be a Text instance or a list of Text instances')
+            super().__init__("incorrect behaviour.")
 
     def ident(html_str):
         lines = html_str.replace('\n', '@@@ @@@')
@@ -104,9 +105,8 @@ class Elem:
         self.content = content
         self.tag_type = tag_type
 
-        if content == '':
-            if not Elem.check_type(content):
-                raise(Exception("incorrect behaviour."))
+        if not Elem.check_type(content):
+            raise Elem.ValidationError()
 
         if content is not None:
             if isinstance(content, Elem):
@@ -116,9 +116,9 @@ class Elem:
                 for item in content:
                     if isinstance(item, (Elem, Text)):
                         self.add_content(item)
-                    else:
-                        # Trate item de outra forma, se necessário
-                        pass
+                    # else:
+                    #     # Trate item de outra forma, se necessário
+                    #     pass
              
 
     def __str__(self):
@@ -171,25 +171,27 @@ class Elem:
         return result
 
     def add_content(self, content):
-        if not Elem.check_type(content) and content != Text(''):
+        if not Elem.check_type(content):
             raise Elem.ValidationError
-        if content is not None:
+        if isinstance(content, list):
+            if not content:
+                raise Elem.ValidationError
+            self.content += [elem for elem in content if elem != Text('')]
+        elif content != Text(''):
             self.content.append(content)
 
-    @staticmethod
     def check_type(content):
         """
         Is this object a HTML-compatible Text instance or a Elem, or even a
         list of both?
         """
-        return (isinstance(content, Elem) or type(content) == Text or
-                (type(content) == list and all([type(elem) == Text or
-                                                isinstance(elem, Elem)
-                                                for elem in content])))
+        return (content == None or isinstance(content, Elem)
+                or type(content) == Text or (type(content) == list
+                and all([type(elem) == Text or isinstance(elem, Elem)
+                for elem in content])))
 
 if __name__ == '__main__':
-    print(str(Elem(tag='body', attr={}, content=Elem(),
-                    tag_type='double')))
+    print("início")
     # print(Elem(tag='body', attr={}, content=Elem(),
                     # tag_type='double'))
 #     try:
