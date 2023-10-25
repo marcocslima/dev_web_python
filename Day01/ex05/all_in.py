@@ -3,15 +3,18 @@ import sys
 def verify_entry(entry):
     if len(sys.argv) != 2:
         return 1
-    for i in entry[1].split(","):
-        if i.strip() == "":
-            return 1
     return 0
 
 def transform_entry(entry):
     return entry.title()
 
 def all_in(entry):
+
+    entry = entry.split(",")
+    for e in entry:
+        if e.strip() == '':
+            entry.remove(e)
+
     states = {
         "Oregon" : "OR",
         "Alabama" : "AL",
@@ -28,7 +31,7 @@ def all_in(entry):
     caps = {value: key for key, value in capital_cities.items()}
     stas = {value: key for key, value in states.items()}
 
-    for i in entry.split(","):
+    for i in entry:
         location = transform_entry(i.strip())
         if location in caps:
             print(location, "is the capital of", stas[caps[location]])
@@ -41,4 +44,4 @@ if __name__ == '__main__':
     if verify_entry(sys.argv):
         exit
     else:
-        all_in(sys.argv[1]) 
+        all_in(sys.argv[1])

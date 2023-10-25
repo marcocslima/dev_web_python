@@ -28,6 +28,7 @@ class Elem:
             super().__init__("incorrect behaviour.")
 
     def format_final(html_str):
+        html_str = html_str.replace('><', '>\n<')
         lines = html_str.split('\n')
         formatted_lines = []
         indent_level = 0
@@ -40,7 +41,7 @@ class Elem:
             if flag == 1:
                 indent_level -= 1
                 flag = 0
-            formatted_line = ' ' * (4 * indent_level) + line
+            formatted_line = ' ' * (2 * indent_level) + line
             if not line.startswith("</") and not line.endswith("/>"):
                 indent_level += 1
             formatted_lines.append(formatted_line)
@@ -58,9 +59,9 @@ class Elem:
         flag = 0
 
         if len(lines) == 1:
-            # print(lines[0].find('>'))
-            # print(lines[0].find('</'))
-            # print(lines[0][[lines[0].find('>')]:[lines[0].find('</')]])
+            print(lines[0].find('>'))
+            print(lines[0].find('</'))
+            print(lines[0][[lines[0].find('>')]:[lines[0].find('</')]])
             front = lines[0].split(' ')
             back = front[1].split('</')
             if len(front) == 2 and len(back) == 2:
