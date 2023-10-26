@@ -4,7 +4,7 @@ import dewiki
 import sys
 
 def request_wikipedia(term):
-    # Parâmetros da solicitação
+    # Primeira query para verificar o id da primeira ocorrencia
     url = "https://en.wikipedia.org/w/api.php"
     params = {
         "action": "query",
@@ -13,18 +13,38 @@ def request_wikipedia(term):
         "format": "json",
     }
 
-    # Envie a solicitação
-    response = requests.get(url, params=params)
+    resp = requests.get(url, params=params)
+    page_id = resp.json()['query']['search'][0]['pageid']
 
-    print(response.json()['query']['search'][0]['pageid'])
+    # Segunda solicitacao para pegar o conteudo com base no id
+    params_by_id = {
+        "action": "query",
+        "format": "json",
+        "pageids": page_id,
+        "prop": "revisions",
+        "rvslots": "*",
+        "rvprop": "content",
+    }
 
-    # Verifique se a solicitação foi bem-sucedida
-    # if response.status_code == 200:
-    #     data = response.json()
-    #     print(data)
-    #     # Processar os dados da resposta aqui
-    # else:
-    #     print("Erro na solicitação à API da Wikipedia")
+    resp_by_id = requests.get(url, params=params_by_id)
+    page_data = resp_by_id.json().get("query", {}).get("pages", {}).get(str(page_id), {})
+
+    wiki_content = page_data["revisions"][0]["slots"]["main"]["*"]
+
+    parsed_content = dewiki.from_string(wiki_content)
+
+    name_file = term.split()
+    for e in name_file:
+        e = e.strip()
+    name_file = '_'.join(name_file) + '.wiki'
+
+    file_ = open(name_file, 'w')
+    file_.write(parsed_content)
+    file_.close()
 
 if __name__ == '__main__':
-    request_wikipedia('escola 42')
+    if len(sys.argv) != 2:
+        print("Error: Please provide a search query as an argument.")
+        sys.exit(1)
+
+    request_wikipedia(sys.argv[1])

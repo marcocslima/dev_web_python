@@ -34,7 +34,8 @@ class Elem:
         return str
 
     def format(str):
-        lines = str.replace('><','>@@@<').split('@@@')
+        lines = str.replace('><','>@@@<').replace(',','@@@').split('@@@')
+
         formatted_lines = []
 
         if len(lines) == 2:
@@ -57,7 +58,6 @@ class Elem:
         flag = 0
 
         for line in lines:
-            # line = line.strip()
             if line.startswith("</"):
                 indent_level -= 1
             if flag == 1:
@@ -73,7 +73,9 @@ class Elem:
         formated = ''.join(formatted_lines)        
 
         if '>  <' in formated:
-            formated = formated.replace('>  <', '><')
+            formated = formated.replace('>  <', '><').replace('\n\n','\n')
+        if formated[-1] == '\n':
+            formated = formated[:-1]
         return formated
     
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
