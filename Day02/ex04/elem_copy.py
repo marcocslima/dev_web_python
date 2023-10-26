@@ -53,9 +53,12 @@ class Elem:
                 if Elem.r_arr(lines[i]) in lines[i+1]:
                     if not '\n' in lines[i]:
                         lines[i] = lines[i].replace('>', '>\n')
-                
+        
         indent_level = 0
         flag = 0
+        # for e in lines:
+        #     if e[-1] == ' ':
+        #         e = e.replace(' ','')
 
         for line in lines:
             if line.startswith("</"):
@@ -73,7 +76,7 @@ class Elem:
         formated = ''.join(formatted_lines)        
 
         if '>  <' in formated:
-            formated = formated.replace('>  <', '><').replace('\n\n','\n')
+            formated = formated.replace('>  <', '><').replace('\n\n','\n').replace('\n   ','\n')
         if formated[-1] == '\n':
             formated = formated[:-1]
         return formated
