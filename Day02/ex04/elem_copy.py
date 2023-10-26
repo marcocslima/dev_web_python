@@ -27,15 +27,37 @@ class Elem:
         def __init__(self):
             super().__init__("incorrect behaviour.")
 
-    def format_final(html_str):
-        html_str = html_str.replace('><', '>\n<')
-        lines = html_str.split('\n')
+    def r_arr(str):
+        replacements = {'<': '', '>': '', '</': '',}
+        for old, new in replacements.items():
+            str = str.replace(old, new)
+        return str
+
+    def format(str):
+        lines = str.replace('><','>@@@<').split('@@@')
         formatted_lines = []
+
+        if len(lines) == 2:
+            return ''.join(lines).replace('\n', '')
+        
+        for i in range(0, len(lines)-1):
+            if not lines[i] in lines[i+1]:
+                if Elem.r_arr(lines[i]) in lines[i+1]:
+                    if not '\n' in lines[i]:
+                        lines[i+1] = lines[i+1].replace('>', '>\n')
+                else:
+                    if not '\n' in lines[i]:
+                        lines[i] = lines[i].replace('>', '>\n')
+            else:
+                if Elem.r_arr(lines[i]) in lines[i+1]:
+                    if not '\n' in lines[i]:
+                        lines[i] = lines[i].replace('>', '>\n')
+                
         indent_level = 0
         flag = 0
 
         for line in lines:
-            line = line.strip()
+            # line = line.strip()
             if line.startswith("</"):
                 indent_level -= 1
             if flag == 1:
@@ -48,79 +70,12 @@ class Elem:
             if not line.startswith("<"):
                 flag = 1
 
-        formatted_html = '\n'.join(formatted_lines)
-        return formatted_html
+        formated = ''.join(formatted_lines)        
+
+        if '>  <' in formated:
+            formated = formated.replace('>  <', '><')
+        return formated
     
-    def ident(html_str):
-        lines = html_str.replace('\n', '@@@ @@@')
-        lines = lines.split(' @@@')
-        formatted_lines = []
-        indent_level = 0
-        flag = 0
-
-        if len(lines) == 1:
-            print(lines[0].find('>'))
-            print(lines[0].find('</'))
-            print(lines[0][[lines[0].find('>')]:[lines[0].find('</')]])
-            front = lines[0].split(' ')
-            back = front[1].split('</')
-            if len(front) == 2 and len(back) == 2:
-                return front[0] + '\n  ' + back[0] + '\n</' + back[1]  
-
-        for line in lines:
-            line = line.strip()
-            if line.startswith("</"):
-                indent_level -= 1
-            if flag == 1:
-                indent_level -= 1
-                flag = 0
-            formatted_line = ' ' * (2 * indent_level) + line
-            if not line.startswith("</") and not line.endswith("/>"):
-                indent_level += 1
-            formatted_lines.append(formatted_line)
-            if not line.startswith("<") or '<div></div>' in line:
-                flag = 1
-           
-        formatted_html = ''.join(formatted_lines)
-        formatted_html = formatted_html.replace('@@@','\n')
-        return formatted_html        
-
-    
-    def format_html(html_str):
-        lines = html_str.replace('><','>,<')
-        lines = lines.split(',')
-        formatted_lines = lines
-
-        for i in range(0, len(formatted_lines)):
-            if formatted_lines[i] == '<body>' and '<div>' in formatted_lines[i+1]:
-                formatted_lines[i] += '\n'
-            if formatted_lines[i] == '<div>' and '<div>' in formatted_lines[i+1]:
-                formatted_lines[i] += '\n'
-            if formatted_lines[i] == '<div>' and not '<' in formatted_lines[i+1]:
-                formatted_lines[i] += '\n'
-                formatted_lines[i+1] += '\n'
-            if not '<' in formatted_lines[i] and not '<' in formatted_lines[i+1]:
-                formatted_lines[i+1] += '\n'
-            if len(formatted_lines) > 1:
-                if '<div>' in formatted_lines[i] and '  </div>' in formatted_lines[i+1]:
-                    formatted_lines[i+1] = formatted_lines[i+1].replace('  </div>','</div>')
-                    formatted_lines[i+1] += '\n'
-            
-        formatted_html = ''.join(formatted_lines)
-        if formatted_html == '<div></div>':
-            return formatted_html
-        else:
-            if '</' in formatted_lines[len(formatted_lines)-1] \
-            and '</' in formatted_lines[len(formatted_lines)-2]\
-            and len(formatted_lines) > 1:
-                formatted_lines[len(formatted_lines)-2] = formatted_lines[len(formatted_lines)-2] + '\n'
-            formatted_html = ''.join(formatted_lines)
-            formatted_html = formatted_html.replace('\n \n','\n ')
-            formatted_html = formatted_html.replace('\n\n','\n')
-            formatted_html = formatted_html.replace(' \n ','')
-            formatted_html = Elem.ident(formatted_html)
-            return formatted_html
-
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
         """
         __init__() method.
@@ -157,7 +112,7 @@ class Elem:
             result += f"</{self.tag}>"
         elif self.tag_type == 'simple':
             result = f"<{self.tag}{self.__make_attr()}/>"
-        result = Elem.format_html(result)
+        result = Elem.format(result)
         return result
 
     def __make_attr(self):
@@ -212,18 +167,19 @@ class Elem:
                 for elem in content])))
 
 if __name__ == '__main__':
-    try:
-        title = Elem(tag='title', content=Text('Hello ground'), tag_type='double')
-        h1 = Elem(tag='h1', content=Text('Oh no, not again!'), tag_type='double')
-        img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
+    assert str(Elem('div', {}, None, 'double')) == '<div></div>'
+    # try:
+    #     title = Elem(tag='title', content=Text('Hello ground'), tag_type='double')
+    #     h1 = Elem(tag='h1', content=Text('Oh no, not again!'), tag_type='double')
+    #     img = Elem(tag='img', attr={'src': 'http://i.imgur.com/pfp3T.jpg'}, tag_type='simple')
         
 
-        header = Elem(tag='head', content=title, tag_type='double')
-        body = Elem(tag='body', content=[h1,img], tag_type='double')
-        html = Text(Elem(tag='html', content=[header,body], tag_type='double'))
+    #     header = Elem(tag='head', content=title, tag_type='double')
+    #     body = Elem(tag='body', content=[h1,img], tag_type='double')
+    #     html = Text(Elem(tag='html', content=[header,body], tag_type='double'))
 
-        base = open('base.html', 'w')
-        base.write(Elem.format_final(html))
-        base.close()
-    except Elem.ValidationError as e:
-        print(e)
+    #     base = open('base.html', 'w')
+    #     base.write(Elem.format_final(html))
+    #     base.close()
+    # except Elem.ValidationError as e:
+    #     print(e)
